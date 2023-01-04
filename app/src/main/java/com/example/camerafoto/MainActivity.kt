@@ -1,69 +1,39 @@
 package com.example.camerafoto
 
-import android.Manifest
-import android.content.Context
-import android.content.pm.PackageManager
-import android.net.Uri
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
-import android.widget.Space
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.Preview
-import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.sharp.PlayArrow
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import coil.compose.rememberImagePainter
 import com.example.camerafoto.camera.Manager
-import com.example.camerafoto.camera.getCameraProvider
-import com.example.camerafoto.camera.takePhoto
 import com.example.camerafoto.camera.ui.CameraView
-import com.example.camerafoto.ui.theme.CameraFotoTheme
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.Locale
-import java.util.concurrent.Executor
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 class MainActivity : ComponentActivity() {
 
@@ -84,34 +54,15 @@ class MainActivity : ComponentActivity() {
 
                     if(manager.savedUris.size > 0) {
                         manager.savedUris.toList().last().apply {
-                            Image(
-                                painter = rememberImagePainter(this),
-                                contentDescription = null,
-                                modifier = Modifier.size(420.dp)
-                            )
+                            EditPage(onRemove = { manager.shouldShowCamera.value = true }) {
+                                Image(
+                                    painter = rememberImagePainter(this),
+                                    contentDescription = null,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            }
                         }
                     }
-
-                    Column(modifier = Modifier.align(Alignment.BottomEnd)
-                    ) {
-                        Button(modifier = Modifier
-                            .size(48.dp),
-                            onClick = { manager.shouldShowCamera.value = true }) {
-
-                        }
-                        Spacer(modifier = Modifier.size(8.dp))
-                        Button(modifier = Modifier
-                            .size(48.dp),
-                            onClick = {
-                                manager.shouldShowCamera.value = true
-                            }) {
-
-
-                        }
-
-                    }
-
-
                 }
             }
 
@@ -124,8 +75,41 @@ class MainActivity : ComponentActivity() {
         super.onDestroy()
         manager.onDestroy()
     }
-
-
-
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EditPage(
+    onRemove: () -> Unit,
+    content: @Composable () -> Unit
+) {
+
+    Scaffold(
+        topBar = {
+
+        },
+        floatingActionButton = {
+            Column { 
+                FloatingActionButton(
+                    onClick = onRemove
+                ) { 
+                    Icon(Icons.Filled.Delete,"", tint = Color.Red)
+                }
+                Spacer(modifier = Modifier.size(16.dp))
+                FloatingActionButton(
+                    onClick = {}
+                ) {
+                    Icon(Icons.Filled.Done,"", tint = Color.Magenta)
+                }
+            }
+        }
+
+    ) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(Color.LightGray)) {
+            content()
+        }
+    }
+}

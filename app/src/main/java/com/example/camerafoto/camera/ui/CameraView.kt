@@ -97,13 +97,13 @@ fun CameraView(
                       ) },
                 content = {
                       Icon(
-                      imageVector = Icons.Sharp.PlayArrow,
-                      contentDescription = "Take picture",
-                      tint = Color.White,
-                      modifier = Modifier
-                      .size(100.dp)
-                      .padding(1.dp)
-                      .border(1.dp, Color.White, CircleShape)
+                          imageVector = Icons.Sharp.PlayArrow,
+                          contentDescription = "Take picture",
+                          tint = Color.White,
+                          modifier = Modifier
+                          .size(100.dp)
+                          .padding(1.dp)
+                          .border(1.dp, Color.White, CircleShape)
                       )
                       }
             )
