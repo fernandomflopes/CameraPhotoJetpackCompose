@@ -15,14 +15,18 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.PlayArrow
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -42,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import coil.compose.rememberImagePainter
 import com.example.camerafoto.camera.Manager
 import com.example.camerafoto.camera.getCameraProvider
 import com.example.camerafoto.camera.takePhoto
@@ -66,6 +71,21 @@ class MainActivity : ComponentActivity() {
         setContent {
             if(manager.shouldShowCamera.value) {
                 CameraView(manager)
+            } else {
+                Column {
+                    manager.savedUris.forEach {
+                        Image(
+                            painter = rememberImagePainter(it),
+                            contentDescription = null,
+                            modifier = Modifier.size(42.dp)
+                        )
+                    }
+
+                    Button(onClick = { manager.shouldShowCamera.value = true }) {
+
+
+                    }
+                }
             }
 
         }

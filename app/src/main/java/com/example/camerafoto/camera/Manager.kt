@@ -33,9 +33,12 @@ import kotlin.coroutines.suspendCoroutine
 open class Manager(private val ctx: Context) {
     val cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor()
     val shouldShowCamera: MutableState<Boolean> = mutableStateOf(false)
+    val savedUris: ArrayList<Uri> = ArrayList<Uri>()
+
 
     open fun handleImageCapture(uri: Uri) {
-        shouldShowCamera.value = false
+//        shouldShowCamera.value = false
+        savedUris.add(uri)
     }
 
     open fun handlerErrorCapture(ex: ImageCaptureException) {

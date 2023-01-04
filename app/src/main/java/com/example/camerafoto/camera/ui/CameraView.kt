@@ -7,8 +7,12 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,6 +21,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -34,13 +40,9 @@ import java.io.File
 import java.util.concurrent.Executor
 
 @Composable
-fun CameraView(
-    outputDirectory: File,
-    executor: Executor,
-    onImageCaptured: (Uri) -> Unit,
-    onError: (ImageCaptureException) -> Unit
+fun BaseCameraView(
+    content: @Composable (imageCapture: ImageCapture) -> Unit
 ) {
-    // 1
     val lensFacing = CameraSelector.LENS_FACING_BACK
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -52,7 +54,6 @@ fun CameraView(
         .requireLensFacing(lensFacing)
         .build()
 
-    // 2
     LaunchedEffect(lensFacing) {
         val cameraProvider = context.getCameraProvider()
         cameraProvider.unbindAll()
@@ -66,35 +67,53 @@ fun CameraView(
         preview.setSurfaceProvider(previewView.surfaceProvider)
     }
 
-    // 3
-    Box(contentAlignment = Alignment.BottomCenter, modifier = Modifier.fillMaxSize()) {
-        AndroidView({ previewView }, modifier = Modifier.fillMaxSize())
 
-        IconButton(
-            modifier = Modifier.padding(bottom = 20.dp),
-            onClick = {
-                takePhoto(
-                    filenameFormat = "yyyy-MM-dd-HH-mm-ss-SSS",
-                    imageCapture = imageCapture,
-                    outputDirectory = outputDirectory,
-                    executor = executor,
-                    onImageCaptured = onImageCaptured,
-                    onError = onError
-                )
-            },
-            content = {
-                Icon(
-                    imageVector = Icons.Sharp.PlayArrow,
-                    contentDescription = "Take picture",
-                    tint = Color.White,
+    Surface(modifier = Modifier.fillMaxSize()) {
+        AndroidView({ previewView }, modifier = Modifier.fillMaxSize())
+        content(imageCapture)
+    }
+
+}
+
+@Composable
+fun CameraView(
+    outputDirectory: File,
+    executor: Executor,
+    onImageCaptured: (Uri) -> Unit,
+    onError: (ImageCaptureException) -> Unit
+) {
+    BaseCameraView { imageCapture ->
+        Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.Center) {
+                IconButton(
                     modifier = Modifier
-                        .size(100.dp)
-                        .padding(1.dp)
-                        .border(1.dp, Color.White, CircleShape)
+                        .padding(bottom = 20.dp)
+                        .background(Color.Black),
+                    onClick = {
+                        takePhoto(
+                            filenameFormat = "yyyy-MM-dd-HH-mm-ss-SSS",
+                            imageCapture = imageCapture,
+                            outputDirectory = outputDirectory,
+                            executor = executor,
+                            onImageCaptured = onImageCaptured,
+                            onError = onError
+                        )
+                    },
+                    content = {
+                        Icon(
+                            imageVector = Icons.Sharp.PlayArrow,
+                            contentDescription = "Take picture",
+                            tint = Color.White,
+                            modifier = Modifier
+                                .size(100.dp)
+                                .padding(1.dp)
+                                .border(1.dp, Color.White, CircleShape)
+                        )
+                    }
                 )
             }
-        )
-    }
+        }
+    // 3
+
 }
 
 @Composable
