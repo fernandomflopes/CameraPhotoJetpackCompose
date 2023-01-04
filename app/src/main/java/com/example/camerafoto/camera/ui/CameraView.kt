@@ -67,7 +67,6 @@ fun BaseCameraView(
         preview.setSurfaceProvider(previewView.surfaceProvider)
     }
 
-
     Surface(modifier = Modifier.fillMaxSize()) {
         AndroidView({ previewView }, modifier = Modifier.fillMaxSize())
         content(imageCapture)
@@ -84,35 +83,33 @@ fun CameraView(
 ) {
     BaseCameraView { imageCapture ->
         Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.Center) {
-                IconButton(
-                    modifier = Modifier
-                        .padding(bottom = 20.dp)
-                        .background(Color.Black),
-                    onClick = {
-                        takePhoto(
-                            filenameFormat = "yyyy-MM-dd-HH-mm-ss-SSS",
-                            imageCapture = imageCapture,
-                            outputDirectory = outputDirectory,
-                            executor = executor,
-                            onImageCaptured = onImageCaptured,
-                            onError = onError
-                        )
-                    },
-                    content = {
-                        Icon(
-                            imageVector = Icons.Sharp.PlayArrow,
-                            contentDescription = "Take picture",
-                            tint = Color.White,
-                            modifier = Modifier
-                                .size(100.dp)
-                                .padding(1.dp)
-                                .border(1.dp, Color.White, CircleShape)
-                        )
-                    }
-                )
-            }
+            IconButton(
+                modifier = Modifier
+                       .padding(bottom = 20.dp),
+                onClick = {
+                      takePhoto(
+                      filenameFormat = "yyyy-MM-dd-HH-mm-ss-SSS",
+                      imageCapture = imageCapture,
+                      outputDirectory = outputDirectory,
+                      executor = executor,
+                      onImageCaptured = onImageCaptured,
+                      onError = onError
+                      ) },
+                content = {
+                      Icon(
+                      imageVector = Icons.Sharp.PlayArrow,
+                      contentDescription = "Take picture",
+                      tint = Color.White,
+                      modifier = Modifier
+                      .size(100.dp)
+                      .padding(1.dp)
+                      .border(1.dp, Color.White, CircleShape)
+                      )
+                      }
+            )
+
         }
-    // 3
+    }
 
 }
 

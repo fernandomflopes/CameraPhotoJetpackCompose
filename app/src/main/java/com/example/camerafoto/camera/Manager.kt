@@ -37,7 +37,7 @@ open class Manager(private val ctx: Context) {
 
 
     open fun handleImageCapture(uri: Uri) {
-//        shouldShowCamera.value = false
+        shouldShowCamera.value = false
         savedUris.add(uri)
     }
 

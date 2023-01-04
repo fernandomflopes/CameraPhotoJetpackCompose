@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.widget.Space
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,8 +18,11 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -70,21 +74,44 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             if(manager.shouldShowCamera.value) {
-                CameraView(manager)
-            } else {
                 Column {
-                    manager.savedUris.forEach {
-                        Image(
-                            painter = rememberImagePainter(it),
-                            contentDescription = null,
-                            modifier = Modifier.size(42.dp)
-                        )
+                    CameraView(manager)
+                }
+            } else {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp)) {
+
+                    if(manager.savedUris.size > 0) {
+                        manager.savedUris.toList().last().apply {
+                            Image(
+                                painter = rememberImagePainter(this),
+                                contentDescription = null,
+                                modifier = Modifier.size(420.dp)
+                            )
+                        }
                     }
 
-                    Button(onClick = { manager.shouldShowCamera.value = true }) {
+                    Column(modifier = Modifier.align(Alignment.BottomEnd)
+                    ) {
+                        Button(modifier = Modifier
+                            .size(48.dp),
+                            onClick = { manager.shouldShowCamera.value = true }) {
 
+                        }
+                        Spacer(modifier = Modifier.size(8.dp))
+                        Button(modifier = Modifier
+                            .size(48.dp),
+                            onClick = {
+                                manager.shouldShowCamera.value = true
+                            }) {
+
+
+                        }
 
                     }
+
+
                 }
             }
 
