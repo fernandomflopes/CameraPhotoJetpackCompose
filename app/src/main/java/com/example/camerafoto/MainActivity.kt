@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import com.example.camerafoto.camera.Manager
 import com.example.camerafoto.camera.ui.CameraView
+import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 class MainActivity : ComponentActivity() {
 
@@ -48,14 +49,17 @@ class MainActivity : ComponentActivity() {
                     CameraView(manager)
                 }
             } else {
-                Box(modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp)) {
-
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                ) {
                     if(manager.savedUris.size > 0) {
                         manager.savedUris.toList().last().apply {
-                            EditPage(onRemove = { manager.shouldShowCamera.value = true }) {
+                            EditPage(
+                                onRemove = { manager.shouldShowCamera.value = true },
+                                onDone = {}
+                            ) {
                                 Image(
+                                    alignment = Alignment.TopStart,
                                     painter = rememberImagePainter(this),
                                     contentDescription = null,
                                     modifier = Modifier.fillMaxSize()
@@ -82,6 +86,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun EditPage(
     onRemove: () -> Unit,
+    onDone: () -> Unit,
     content: @Composable () -> Unit
 ) {
 
@@ -98,7 +103,7 @@ fun EditPage(
                 }
                 Spacer(modifier = Modifier.size(16.dp))
                 FloatingActionButton(
-                    onClick = {}
+                    onClick = onDone
                 ) {
                     Icon(Icons.Filled.Done,"", tint = Color.Magenta)
                 }
@@ -106,9 +111,9 @@ fun EditPage(
         }
 
     ) {
-        Box(modifier = Modifier
+        Surface(modifier = Modifier
             .fillMaxSize()
-            .background(Color.LightGray)) {
+            .background(Color.Transparent)) {
             content()
         }
     }
